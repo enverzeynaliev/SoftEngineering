@@ -6,7 +6,7 @@ def hello
   puts 'Введи свою фамилию'
   last_name = gets.chomp
   
-  puts 'Введи свой возраст'
+  puts 'Введи свoй возраст'
   age = gets.to_i
 
   if age < 18
