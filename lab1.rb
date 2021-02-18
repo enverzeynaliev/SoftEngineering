@@ -44,8 +44,10 @@ def menu
       b = gets.to_i
 
       puts "Результат #{compareNums(a, b)}"
-    else
+    when -1
       break
+    else
+      puts "Введен неправильный вариант"
     end
   end
 end
