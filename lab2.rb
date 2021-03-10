@@ -1,5 +1,5 @@
 def put_data
-  puts 'Введите строку'
+  puts 'Введите число и строку'
   words = gets.chomp
   words = words.split(" ")
   word = words[1]
@@ -26,5 +26,26 @@ def pokemon_processor
   puts 'Массив'
   puts pokemons
 end
+def menu
+  loop do
+    puts '1. Число и строка'
+    puts '2. Хеш покемонов'
+    puts '3. Выход'
+    puts "\n"
 
-put_data
+
+    choose = gets.to_i
+    case choose
+    when 1
+      put_data
+    when 2
+      pokemon_processor
+    when 3
+      break
+    else
+      puts "Введен неправильный вариант"
+    end
+  end
+  end
+
+menu
