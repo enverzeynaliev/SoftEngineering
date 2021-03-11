@@ -1,5 +1,6 @@
 def task_1
   file = File.open('input.txt')
+  #students= file.readlines.map { :chomp }
   students = file.read.split("\n")
   file.close
   result = []
@@ -23,6 +24,7 @@ def task_1
   file.close
 end
 
+
 def task_2
   balance = 100.0
   if File.exist?("balance.txt") #проверка существования файла
@@ -32,12 +34,14 @@ def task_2
   end
   loop do
 
-    puts '(B) Баланс'
-    puts '(D) Депозит'
-    puts '(W) Вывод '
-    puts '(Q) Quit'
+    puts "
+  (B) Баланс
+  (D) Депозит
+  (W) Вывод
+  (Q) Quit"
 
     choose = gets.chomp
+
     case choose.downcase
     when 'd'
       puts 'Введите сумму для депозита'
@@ -47,6 +51,8 @@ def task_2
       else
         balance += sum
         puts "Ваш новый баланс: #{balance}"
+        f = File.open('balance.txt', 'w')
+        f.write(balance)
       end
     when 'w'
       puts 'Введите сумму для списания'
@@ -59,6 +65,8 @@ def task_2
         balance -= sum
         puts "Ваш новый баланс: #{balance}"
       end
+      f = File.open('balance.txt', 'w')
+      f.write(balance)
     when 'b'
       puts "Ваш баланс: #{balance}"
     when 'q'
