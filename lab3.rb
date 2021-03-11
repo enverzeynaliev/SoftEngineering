@@ -1,7 +1,7 @@
 def task_1
   file = File.open('input.txt')
-  #students= file.readlines.map { :chomp }
-  students = file.read.split("\n")
+  students= file.readlines.map { |line|line.chomp }
+  #students = file.read.split("\n")
   file.close
   result = []
 
