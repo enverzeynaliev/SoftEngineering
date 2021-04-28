@@ -1,75 +1,64 @@
 require 'socket'
 
-server = TCPServer.new(8000)
+server = TCPServer.new(8080)
 
 class ATM
   def initialize
-    if File.exists?('balance.txt')
-      balanceValue = File.open('balance.txt', 'r')
-      @balance = balanceValue.read.chomp.to_f
+    @balance = 10000.0
+  end
+
+  def withdraw(sum)
+    if sum <= 0
+      'Sum should not be negative'
+    elsif sum > @balance
+      'Not enough money'
     else
-      balanceValue = File.open('balance.txt', 'w')
-      balanceValue.puts('100.00')
-      balanceValue.close
-      balanceValue = File.open('balance.txt', 'r')
-      @balance = balanceValue.read.chomp.to_f
+      @balance -= sum
+      "New balance: #{@balance}"
     end
   end
 
-  def withdraw(withdrawValue)
-    if withdrawValue < 0
-      abort 'Ошибка! Введено отрицательное число.'
+  def deposit(sum)
+    if sum <= 0
+      'Sum should not be negative'
+    else
+      @balance += sum
+      "New balance: #{@balance}"
     end
-    if @balance < withdrawValue
-      abort 'Ошибка! Нехватает средств.'
-    end
-    @balance -= withdrawValue
-    balanceValue = File.open('balance.txt', 'w')
-    balanceValue.puts(@balance)
-    balanceValue.close
-    "New balance: #{@balance}"
-  end
-
-  def deposit(depositeValue)
-    if depositeValue < 0
-      abort 'Ошибка! Введено отрицательное число.'
-      exit
-    end
-    @balance += depositeValue
-    balanceValue = File.open('balance.txt', 'w')
-    balanceValue.puts(@balance)
-    balanceValue.close
-    "New balance: #{@balance}"
   end
 
   def balance
-    "Balance: #{@balance}"
+    "Your balance: #{@balance} \n"
   end
 
 end
 
-while connection == server.accept
+while (connection = server.accept)
 
-  ATM = ATM.new
+  atm = CashMachine.new
 
   request = connection.gets
-  m, full_path = request.split(' ')
+  nothing, full_path = request.split(' ')
   path = full_path.split('/')[1]
-  method = path.split('?')[0]
-  value = path.split('?')[1].split('=')[1].to_i
+  next unless nothing == 'GET'
+  if full_path.split('/')[1].include?('?')
+    method = path.split('?')[0]
+    value = path.split('?')[1].split('=')[1].to_i
+  end
 
   connection.print "HTTP/1.1 200\r\n"
   connection.print "Content-Type: text/html\r\n"
   connection.print "\r\n"
+  connection.print atm.balance if path == 'balance'
 
+  next if value.nil?
   connection.print case method
                    when 'deposit'
-                     ATM.deposit(value)
+                     atm.deposit(value)
                    when 'withdraw'
-                     ATM.withdraw(value)
-                   when 'balance'
-                     ATM.balance
+                     atm.withdraw(value)
                    else
                      'error'
                    end
+
 end
